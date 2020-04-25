@@ -48,6 +48,7 @@ function remove(file){
 con = confirm('Potwierdź usunięcie elementu!');
 if(con){
 httpGet("http://localhost:8080/remove?file="+file);
+}
 prepare();
 }
 
