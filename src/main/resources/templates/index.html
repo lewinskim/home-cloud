@@ -8,7 +8,6 @@
 <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
         integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
         crossorigin=""></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -20,25 +19,44 @@
 
 <script th:inline="javascript">
  /*<![CDATA[*/
- var divs ='';
- var data = JSON.parse(httpGet());
-function httpGet()
+ prepare();
+ let con = false;
+function httpGet(url)
 {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", "http://localhost:8080/files", false ); // false for synchronous request
+    xmlHttp.open( "GET", url, false ); // false for synchronous request
     xmlHttp.send( null );
     return xmlHttp.responseText;
 }
+function prepare(){
+divs="";
+var data = JSON.parse(httpGet("http://localhost:8080/files"));
+
 data.forEach(function(top){
-divs += '<div class="card" style="float: left; width: 18rem;">'+
+divs += '<div class="card" style="float: left; width: 16rem;">'+
             '<img src="open.png" class="card-img-top" alt="..."><div class="card-body">'+
             '<h5 class="card-title">Card with stretched link</h5><p class="card-text">'+
-            top+
-            '.</p><a href="' + top + '" class="btn btn-primary stretched-link">Go</a></div></div>';
-
+            top.substring(41)+
+            '</p><button onclick="remove(\''+top+'\')" class="btn">Remove</button>'+
+            '</p><button onclick="add(\''+top+'\')" class="btn">Add</button>'+
+            '</div></div>';
 });
 document.getElementById("console").innerHTML = divs;
-console.log(data.length);
+}
+
+function remove(file){
+con = confirm('Potwierdź usunięcie elementu!');
+if(con){
+httpGet("http://localhost:8080/remove?file="+file);
+prepare();
+}
+
+function add(file){
+let dir = prompt('Wprowadź nazwę nowego elementu:');
+httpGet("http://localhost:8080/add?file="+file+"&newdir="+dir);
+prepare();
+}
+
 /*]]>*/
 
 </script>
