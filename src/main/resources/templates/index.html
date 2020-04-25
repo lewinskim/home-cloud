@@ -14,13 +14,14 @@
     <title>Title</title>
 </head>
 <body>
-<div id="json">..</div>
+<br>
+<div id="console" class="container">console</div>
 
 
 <script th:inline="javascript">
  /*<![CDATA[*/
-document.getElementById("json").innerHTML = httpGet();
-
+ var divs ='';
+ var data = JSON.parse(httpGet());
 function httpGet()
 {
     var xmlHttp = new XMLHttpRequest();
@@ -28,7 +29,18 @@ function httpGet()
     xmlHttp.send( null );
     return xmlHttp.responseText;
 }
+data.forEach(function(top){
+divs += '<div class="card" style="float: left; width: 18rem;">'+
+            '<img src="open.png" class="card-img-top" alt="..."><div class="card-body">'+
+            '<h5 class="card-title">Card with stretched link</h5><p class="card-text">'+
+            top+
+            '.</p><a href="' + top + '" class="btn btn-primary stretched-link">Go</a></div></div>';
+
+});
+document.getElementById("console").innerHTML = divs;
+console.log(data.length);
 /*]]>*/
+
 </script>
 </body>
 </html>
